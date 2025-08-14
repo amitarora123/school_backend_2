@@ -18,3 +18,56 @@ model Admin {
   id    Int    @id @default(autoincrement())
   email String @unique
 }
+
+model School {
+  id                String     @id @default(cuid())
+  name              String
+  code              String
+  affiliationNumber String? // optional
+  board             Board
+  medium            Medium
+  establishmentYear Int? // optional
+  schoolType        SchoolType
+  contactEmail      String? // optional
+  contactPhone      String? // optional
+  website           String? // optional
+  logoUrl           String? // optional
+  address           Address    @relation(fields: [addressId], references: [id])
+  addressId         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Define enums for board, medium, and school type
+enum Board {
+  CBSE
+  ICSE
+  STATE
+  IB
+  CAMBRIDGE
+}
+
+enum Medium {
+  English
+  Hindi
+  Regional
+}
+
+enum SchoolType {
+  Private
+  Government
+  Aided
+  International
+}
+
+// Example Address model
+model Address {
+  id      String   @id @default(cuid())
+  street  String
+  city    String
+  state   String
+  country String
+  zipCode String
+  schools School[]
+}
