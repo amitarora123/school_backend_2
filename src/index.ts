@@ -3,7 +3,7 @@ import app from "./app";
 
 dotenv.config();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 4002;
 app.listen(port, () => {
   console.log("Server live at ", port);
 });
