@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
 import app from "./app";
+import config from "./config/config";
 
-dotenv.config();
-
-const port = process.env.PORT || 4002;
-app.listen(port, () => {
-  console.log("Server live at ", port);
+app.listen(config.port, () => {
+  console.log("Server live at", config.port);
 });
