@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 // Route imports
 import schoolRoutes from "./routes/school.routes";
 import adminRoutes from "./routes/admin.routes";
+import teacherRoutes from "./routes/teacher.routes";
+import permissionRoutes from "./routes/permission.routes";
 
 const app = express();
 
@@ -21,6 +23,8 @@ app.use("/api/health-status", (req, res) => {
 
 app.use("/api/school", schoolRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/teacher", teacherRoutes);
+app.use("/api/permission", permissionRoutes);
 app.use(
   (
     err: any,

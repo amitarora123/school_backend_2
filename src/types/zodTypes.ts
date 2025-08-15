@@ -52,13 +52,13 @@ export const loginTeacherSchema = z.object({
   password: z.string(),
 });
 
-export const permissionSchema = z.object({
+export const createPermissionSchema = z.object({
   module: z.string(),
   can_create: z.boolean(),
   can_delete: z.boolean(),
   can_update: z.boolean(),
   can_read: z.boolean(),
-  role_id: z.string(),
+  role: z.string(),
 });
 
 export const createClassSchema = z.object({
