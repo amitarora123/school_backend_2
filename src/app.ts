@@ -21,6 +21,7 @@ app.use("/api/health-status", (req, res) => {
 
 app.use("/api/school", schoolRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/")
 app.use(
   (
     err: any,
