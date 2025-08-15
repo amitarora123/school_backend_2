@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -31,9 +30,8 @@ enum SchoolType {
 }
 
 model School {
-  id                String     @id @default(cuid())
+  code              String     @id
   name              String
-  code              String
   affiliationNumber String? // optional
   board             Board
   medium            Medium
@@ -69,8 +67,8 @@ model Admin {
   username    String @unique
   password    String
   designation String
-  school      School @relation(fields: [schoolId], references: [id])
-  schoolId    String
+  school      School @relation(fields: [schoolCode], references: [code])
+  schoolCode  String
   role        Role   @relation(fields: [roleId], references: [id])
   roleId      String
 
@@ -96,6 +94,7 @@ model Role {
   admins     Admin[]
   Permission Permission[]
   Teacher    Teacher[]
+  Student    Student[]
 }
 
 model Permission {
@@ -110,6 +109,8 @@ model Permission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([roleId, module])
 }
 
 enum TeacherStatus {
@@ -125,8 +126,8 @@ model Teacher {
   password    String
   role        Role?         @relation(fields: [roleId], references: [id])
   roleId      String?
-  school      School?       @relation(fields: [schoolId], references: [id])
-  schoolId    String?
+  school      School?       @relation(fields: [schoolCode], references: [code])
+  schoolCode  String?
   designation String
   status      TeacherStatus @default(ACTIVE)
 
@@ -160,6 +161,8 @@ model Student {
   admissionNo String        @unique
   aadhar      String        @unique
   category    String
+  role        Role          @relation(fields: [roleId], references: [id])
+  roleId      String
   class       Class         @relation(fields: [classId], references: [id])
   classId     String
   section     Section       @relation(fields: [sectionId], references: [id])
@@ -171,13 +174,13 @@ model Student {
 }
 
 model Class {
-  id       String    @id @default(cuid())
-  name     String
-  standard Int
-  school   School    @relation(fields: [schoolId], references: [id])
-  schoolId String
-  sections Section[]
-  students Student[]
+  id         String    @id @default(cuid())
+  name       String
+  standard   Int
+  school     School    @relation(fields: [schoolCode], references: [code])
+  schoolCode String
+  sections   Section[]
+  students   Student[]
 }
 
 model Section {
