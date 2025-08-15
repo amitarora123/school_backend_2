@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -12,31 +6,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-model Admin {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-}
-
-model School {
-  id                String     @id @default(cuid())
-  name              String
-  code              String
-  affiliationNumber String? // optional
-  board             Board
-  medium            Medium
-  establishmentYear Int? // optional
-  schoolType        SchoolType
-  contactEmail      String? // optional
-  contactPhone      String? // optional
-  website           String? // optional
-  logoUrl           String? // optional
-  address           Address    @relation(fields: [addressId], references: [id])
-  addressId         String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 // Define enums for board, medium, and school type
@@ -61,6 +30,29 @@ enum SchoolType {
   International
 }
 
+model School {
+  id                String     @id @default(cuid())
+  name              String
+  code              String
+  affiliationNumber String? // optional
+  board             Board
+  medium            Medium
+  establishmentYear Int? // optional
+  schoolType        SchoolType
+  contactEmail      String? // optional
+  contactPhone      String? // optional
+  website           String? // optional
+  logoUrl           String? // optional
+  address           Address    @relation(fields: [addressId], references: [id])
+  addressId         String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Admin     Admin[]
+  Teacher   Teacher[]
+  Class     Class[]
+}
+
 // Example Address model
 model Address {
   id      String   @id @default(cuid())
@@ -70,4 +62,131 @@ model Address {
   country String
   zipCode String
   schools School[]
+}
+
+model Admin {
+  id          String @id @default(cuid())
+  username    String @unique
+  password    String
+  designation String
+  school      School @relation(fields: [schoolId], references: [id])
+  schoolId    String
+  role        Role   @relation(fields: [roleId], references: [id])
+  roleId      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum RoleName {
+  admin
+  teacher
+  student
+  parent
+  staff
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        RoleName @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admins     Admin[]
+  Permission Permission[]
+  Teacher    Teacher[]
+}
+
+model Permission {
+  id         String  @id @default(cuid())
+  module     String
+  can_create Boolean @default(false)
+  can_read   Boolean @default(false)
+  can_update Boolean @default(false)
+  can_delete Boolean @default(false)
+  role       Role    @relation(fields: [roleId], references: [id])
+  roleId     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TeacherStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Teacher {
+  id          String        @id @default(cuid())
+  fullName    String
+  email       String        @unique
+  phone       String
+  password    String
+  role        Role?         @relation(fields: [roleId], references: [id])
+  roleId      String?
+  school      School?       @relation(fields: [schoolId], references: [id])
+  schoolId    String?
+  designation String
+  status      TeacherStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Section   Section[]
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  LEFT
+  TRANSFERRED
+}
+
+model Student {
+  id          String        @id @default(cuid())
+  name        String
+  dob         DateTime
+  gender      Gender
+  address     String
+  email       String        @unique
+  phone       String
+  photo       String?
+  admissionNo String        @unique
+  aadhar      String        @unique
+  category    String
+  class       Class         @relation(fields: [classId], references: [id])
+  classId     String
+  section     Section       @relation(fields: [sectionId], references: [id])
+  sectionId   String
+  status      StudentStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Class {
+  id       String    @id @default(cuid())
+  name     String
+  standard Int
+  school   School    @relation(fields: [schoolId], references: [id])
+  schoolId String
+  sections Section[]
+  students Student[]
+}
+
+model Section {
+  id             String    @id @default(cuid())
+  name           String
+  roomNo         String
+  classTeacher   Teacher   @relation(fields: [classTeacherId], references: [id])
+  classTeacherId String
+  class          Class     @relation(fields: [classId], references: [id])
+  classId        String
+  students       Student[]
 }
