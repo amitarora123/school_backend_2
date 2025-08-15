@@ -1,8 +1,8 @@
 export interface AuthUser {
-  _id: string;
+  id: string;
   username: string;
-  role_id: string;
-  school_id: string;
+  roleId: string;
+  schoolCode: string;
 }
 
 declare global {

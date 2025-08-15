@@ -4,7 +4,7 @@ export const createAdminSchema = z.object({
   username: z.string().min(6),
   password: z.string().min(6),
   designation: z.string(),
-  school_id: z.string(),
+  schoolCode: z.string(),
 });
 
 export const addressSchema = z.object({
@@ -34,6 +34,7 @@ export const createSchoolSchema = z.object({
 export const loginAdminSchema = z.object({
   username: z.string(),
   password: z.string(),
+  schoolCode: z.string(),
 });
 
 export const createTeacherSchema = z.object({
@@ -41,7 +42,7 @@ export const createTeacherSchema = z.object({
   email: z.email(),
   password: z.string().min(6),
   phone: z.string().min(10).max(10),
-  school_id: z.string(),
+  schoolCode: z.string(),
   designation: z.string(),
   status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 });
@@ -63,7 +64,7 @@ export const permissionSchema = z.object({
 export const createClassSchema = z.object({
   name: z.string(),
   standard: z.number(),
-  school_id: z.string(),
+  schoolCode: z.string(),
 });
 
 export const createSectionSchema = z.object({

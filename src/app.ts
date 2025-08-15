@@ -4,7 +4,8 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
 // Route imports
-import schoolRoutes from "./routes/school.route";
+import schoolRoutes from "./routes/school.routes";
+import adminRoutes from "./routes/admin.routes";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/api/health-status", (req, res) => {
 });
 
 app.use("/api/school", schoolRoutes);
+app.use("/api/admin", adminRoutes);
 app.use(
   (
     err: any,

@@ -8,20 +8,18 @@ export const hasPermission = (
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
-    const { school_id } = req.body;
+    const { schoolCode } = req.body;
 
-    console.log("body school_id: ", school_id);
-    console.log("admin school_id: ", user?.school_id);
     const permission = await prisma.permission.findUnique({
       where: {
         roleId_module: {
-          roleId: user!.role_id,
+          roleId: user!.roleId,
           module: module,
         },
       },
     });
 
-    if (!permission || !permission[action] || school_id != user?.school_id) {
+    if (!permission || !permission[action] || schoolCode != user?.schoolCode) {
       return res
         .status(403)
         .json({ message: `Access denied: Missing ${action} on ${module}.` });
