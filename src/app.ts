@@ -3,6 +3,9 @@ import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
+// Routes Imports
+import authRoutes from "./routes/auth.routes";
+
 const app = express();
 
 app.use(express.json());
@@ -14,5 +17,8 @@ app.use(cors());
 app.use("/api/health-status", (req, res) => {
   res.send("Service is live");
 });
+
+// Auth Routes
+app.use("/api/auth", authRoutes);
 
 export default app;
