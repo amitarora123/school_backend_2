@@ -90,3 +90,19 @@ export const loginAdmin = asyncHandler(
     }
   }
 );
+
+// ** Admin approves teacher to Register (NOT IN USE)**
+export const approveTeacher = async (req: Request, res: Response) => {
+  try {
+    const { teacherId } = req.params;
+
+    const teacher = await prisma.teacher.update({
+      where: { id: teacherId },
+      data: { status: "ACTIVE" },
+    });
+
+    res.json({ message: "Teacher approved successfully", teacher });
+  } catch (error) {
+    res.status(500).json({ message: "Error approving teacher", error });
+  }
+};

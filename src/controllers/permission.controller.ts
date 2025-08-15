@@ -7,7 +7,7 @@ export const createPermission = asyncHandler(
     try {
       const { can_create, can_delete, can_update, can_read, module, role } =
         req.body;
-        // r
+      // r
       const existingRole = await prisma.role.findUnique({
         where: {
           name: role,
@@ -36,7 +36,7 @@ export const createPermission = asyncHandler(
 
       return res.status(200).json({
         success: true,
-        message: "Role created successfully",
+        message: "Permission created successfully",
       });
     } catch (error) {
       console.log("Error occurred in createPermission controller", error);

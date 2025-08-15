@@ -6,3 +6,5 @@ import { createPermissionSchema } from "../types/zodTypes";
 const router = Router();
 
 router.post("/", validate(createPermissionSchema), createPermission);
+
+export default router;
