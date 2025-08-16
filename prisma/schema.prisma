@@ -7,28 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Define enums for board, medium, and school type
-enum Board {
-  CBSE
-  ICSE
-  STATE
-  IB
-  CAMBRIDGE
-}
-
-enum Medium {
-  English
-  Hindi
-  Regional
-}
-
-enum SchoolType {
-  Private
-  Government
-  Aided
-  International
-}
-
 model School {
   code              String     @id
   name              String
@@ -49,17 +27,7 @@ model School {
   Admin     Admin[]
   Teacher   Teacher[]
   Class     Class[]
-}
-
-// Example Address model
-model Address {
-  id      String   @id @default(cuid())
-  street  String
-  city    String
-  state   String
-  country String
-  zipCode String
-  schools School[]
+  Student   Student[]
 }
 
 model Admin {
@@ -76,48 +44,6 @@ model Admin {
   updatedAt DateTime @updatedAt
 }
 
-enum RoleName {
-  admin
-  teacher
-  student
-  parent
-  staff
-}
-
-model Role {
-  id          String   @id @default(cuid())
-  name        RoleName @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  admins     Admin[]
-  Permission Permission[]
-  Teacher    Teacher[]
-  Student    Student[]
-}
-
-model Permission {
-  id         String  @id @default(cuid())
-  module     String
-  can_create Boolean @default(false)
-  can_read   Boolean @default(false)
-  can_update Boolean @default(false)
-  can_delete Boolean @default(false)
-  role       Role    @relation(fields: [roleId], references: [id])
-  roleId     String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([roleId, module])
-}
-
-enum TeacherStatus {
-  ACTIVE
-  INACTIVE
-}
-
 model Teacher {
   id          String        @id @default(cuid())
   fullName    String
@@ -129,24 +55,11 @@ model Teacher {
   school      School?       @relation(fields: [schoolCode], references: [code])
   schoolCode  String?
   designation String
-  status      TeacherStatus @default(ACTIVE)
+  status      TeacherStatus @default(INACTIVE)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   Section   Section[]
-}
-
-enum Gender {
-  Male
-  Female
-  Other
-}
-
-enum StudentStatus {
-  ACTIVE
-  INACTIVE
-  LEFT
-  TRANSFERRED
 }
 
 model Student {
@@ -168,10 +81,51 @@ model Student {
   classId     String
   section     Section       @relation(fields: [sectionId], references: [id])
   sectionId   String
-  status      StudentStatus @default(ACTIVE)
+  status      StudentStatus @default(INACTIVE)
+  schoolCode  String
+  school      School        @relation(fields: [schoolCode], references: [code])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        RoleName @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  admins     Admin[]
+  Permission Permission[]
+  Teacher    Teacher[]
+  Student    Student[]
+}
+
+model Address {
+  id      String   @id @default(cuid())
+  street  String
+  city    String
+  state   String
+  country String
+  zipCode String
+  schools School[]
+}
+
+model Permission {
+  id         String  @id @default(cuid())
+  module     String
+  can_create Boolean @default(false)
+  can_read   Boolean @default(false)
+  can_update Boolean @default(false)
+  can_delete Boolean @default(false)
+  role       Role    @relation(fields: [roleId], references: [id])
+  roleId     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([roleId, module])
 }
 
 model Class {
@@ -193,4 +147,51 @@ model Section {
   class          Class     @relation(fields: [classId], references: [id])
   classId        String
   students       Student[]
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  LEFT
+  TRANSFERRED
+}
+
+enum TeacherStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum Board {
+  CBSE
+  ICSE
+  STATE
+  IB
+  CAMBRIDGE
+}
+
+enum Medium {
+  English
+  Hindi
+  Regional
+}
+
+enum SchoolType {
+  Private
+  Government
+  Aided
+  International
+}
+
+enum RoleName {
+  admin
+  teacher
+  student
+  parent
+  staff
 }

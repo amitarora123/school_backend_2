@@ -47,6 +47,26 @@ export const createTeacherSchema = z.object({
   status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 });
 
+export const createStudentSchema = z.object({
+  name: z.string(),
+  dob: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: "Invalid date format",
+  }),
+  gender: z.enum(["Male", "Female", "Other"]),
+  address: z.string(),
+  email: z.string().email(),
+  password: z.string().min(6),
+  phone: z.string().min(10).max(10),
+  photo: z.string().url().optional(),
+  admissionNo: z.string(),
+  aadhar: z.string().length(12, { message: "Aadhar must be 12 digits" }),
+  category: z.string(),
+  roleId: z.string(),
+  classId: z.string(),
+  sectionId: z.string(),
+  status: z.enum(["ACTIVE", "INACTIVE", "LEFT", "TRANSFERRED"]).optional(),
+});
+
 export const loginTeacherSchema = z.object({
   email: z.email(),
   password: z.string(),
