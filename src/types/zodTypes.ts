@@ -31,6 +31,17 @@ export const createSchoolSchema = z.object({
   address: addressSchema,
 });
 
+export const signupSchema = z.object({
+  username: z.string().min(3),
+  password: z.string().min(6),
+  school_id: z.string(),
+});
+
+export const loginSchema = z.object({
+  username: z.string(),
+  password: z.string(),
+});
+
 export const loginAdminSchema = z.object({
   username: z.string(),
   password: z.string(),

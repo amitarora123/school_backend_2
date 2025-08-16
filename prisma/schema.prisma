@@ -19,7 +19,7 @@ model School {
   contactPhone      String? // optional
   website           String? // optional
   logoUrl           String? // optional
-  address           Address    @relation(fields: [addressId], references: [id])
+  address           Address @relation(fields: [addressId], references: [id])
   addressId         String
 
   createdAt DateTime  @default(now())
@@ -28,6 +28,14 @@ model School {
   Teacher   Teacher[]
   Class     Class[]
   Student   Student[]
+}
+model School_Admin {
+  id          String @id @default(cuid())
+  username    String @unique
+  password    String
+  school_id   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Admin {
