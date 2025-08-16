@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../config/prisma";
 import { hashPassword, verifyPassword } from "../utils/bcrypt";
+import { getStudentRole } from "../utils/findRole";
+import { createAccessToken } from "../utils/jwtUtil";
 
 export const registerStudent = async (req: Request, res: Response) => {
   try {
@@ -14,6 +16,7 @@ export const registerStudent = async (req: Request, res: Response) => {
       email,
       phone,
       password,
+      schoolCode,
       admissionNo,
       aadhar,
       category,
@@ -32,6 +35,7 @@ export const registerStudent = async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await hashPassword(password);
+    const studentRole = await getStudentRole();
 
     const student = await prisma.student.create({
       data: {
@@ -40,29 +44,32 @@ export const registerStudent = async (req: Request, res: Response) => {
         dob: new Date(dob),
         gender,
         address,
-        password,
+        password: hashedPassword,
         email,
         phone,
         photo: null,
         admissionNo,
         aadhar,
-        category,
-        roleId,
-        classId,
-        sectionId,
+        category, 
+        schoolCode,
+        school: {
+          connect: {
+            code: schoolCode,
+          },
+        },
         class: {
           connect: {
-            id,
+            id: classId,
           },
         },
         role: {
           connect: {
-            id: id!.id,
+            id: studentRole?.id,
           },
         },
         section: {
           connect: {
-            id: id!.id,
+            id: sectionId,
           },
         },
         status: "INACTIVE",
@@ -98,16 +105,12 @@ export const loginStudent = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      {
-        id: student.id,
-        role: "student",
-        classId: student.classId,
-        sectionId: student.sectionId,
-      },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1d" }
-    );
+    const token = createAccessToken({
+      id: student.id,
+      roleId: "student",
+      schoolCode: student.schoolCode,
+      username: email,
+    });
 
     res.json({ message: "Login successful", token });
   } catch (error) {

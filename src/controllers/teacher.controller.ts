@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import prisma from "../config/prisma";
 import { hashPassword, verifyPassword } from "../utils/bcrypt";
+import { createAccessToken } from "../utils/jwtUtil";
 
 export const registerTeacher = async (req: Request, res: Response) => {
   try {
@@ -74,15 +74,12 @@ export const loginTeacher = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      {
-        id: teacher.id,
-        roleId: teacher.roleId,
-        schoolCode: teacher.schoolCode,
-      },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1d" }
-    );
+    const token = createAccessToken({
+      id: teacher.id,
+      roleId: teacher.roleId!,
+      schoolCode: teacher.schoolCode!,
+      username: email,
+    });
 
     res.json({ message: "Login successful", token });
   } catch (error) {

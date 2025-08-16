@@ -13,8 +13,6 @@ const router = Router();
 router.post(
     "/register",
     validate(createStudentSchema),
-    verifyAuth,
-    hasPermission("teacher", "can_create"),
     registerStudent
 );
 router.post("/login", loginStudent);

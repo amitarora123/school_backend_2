@@ -20,4 +20,6 @@ router.post(
 
 router.post("/login", loginTeacher);
 
+router.post("/app",)
+
 export default router;
