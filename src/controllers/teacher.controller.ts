@@ -89,3 +89,19 @@ export const loginTeacher = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error logging in teacher", error });
   }
 };
+
+// ** Teacher will approve student Registeration **
+export const approveStudent = async (req: Request, res: Response) => {
+  try {
+    const { studentId } = req.params;
+
+    const student = await prisma.student.update({
+      where: { id: studentId },
+      data: { status: "ACTIVE" },
+    });
+
+    res.json({ message: "Student approved successfully", student });
+  } catch (error) {
+    res.status(500).json({ message: "Error approving student", error });
+  }
+};
